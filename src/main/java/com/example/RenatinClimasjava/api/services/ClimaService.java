@@ -5,10 +5,27 @@ import com.example.RenatinClimasjava.api.factories.AdvisorClimaTempoFactory;
 import com.example.RenatinClimasjava.api.factories.HgBrasilFactory;
 import com.example.RenatinClimasjava.api.factories.Interface.IClimaFactory;
 
-public class ClimaService {
-    IClimaFactory factories = new AdvisorClimaTempoFactory();
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    public ClimaDto GetClimas(){
-        return factories.GetClima();
+
+public class ClimaService {
+    List<IClimaFactory> factories = GetFactories();
+
+    private List<IClimaFactory> GetFactories() {
+        var retorno =  new ArrayList<IClimaFactory>();
+        retorno.add(new AdvisorClimaTempoFactory());
+        retorno.add(new HgBrasilFactory());
+        return retorno;
+    }
+
+    public List<ClimaDto> GetClimas(){
+        List<ClimaDto> retorno = new ArrayList<ClimaDto>();
+
+        for (var factory: factories) {
+             retorno.add(factory.GetClima());
+        }
+        return retorno;
     }
 }

@@ -33,6 +33,7 @@ public class AdvisorClimaTempoFactory implements IClimaFactory<ClimaAdvisorDto> 
     @Override
     public ClimaDto Mapper(ClimaAdvisorDto resultObj) throws JsonProcessingException {
         ClimaDto clima = new ClimaDto();
+        clima.Service = "AdvisorClimaTempo";
         clima.Temperatura = resultObj.data.temperature;
         clima.Cidade = resultObj.name;
         return clima;
