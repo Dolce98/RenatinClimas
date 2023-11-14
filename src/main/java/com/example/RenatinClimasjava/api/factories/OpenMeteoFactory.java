@@ -3,6 +3,7 @@ package com.example.RenatinClimasjava.api.factories;
 import java.io.IOException;
 
 import com.example.RenatinClimasjava.api.domain.ClimaDto;
+import com.example.RenatinClimasjava.api.domain.RqClimaDto;
 import com.example.RenatinClimasjava.api.dto.ClimaHgBrasilDto;
 import com.example.RenatinClimasjava.api.dto.ClimaOpenMeteoDto;
 import com.example.RenatinClimasjava.api.factories.Interface.IClimaFactory;
@@ -12,12 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OpenMeteoFactory implements IClimaFactory<ClimaOpenMeteoDto> {
 
-	String Url = "https://api.open-meteo.com/v1/forecast?latitude=-23.5475&longitude=-46.6361&current=temperature_2m&hourly=temperature_2m&timezone=America%2FSao_Paulo&forecast_days=1";
+	String Url = "https://api.open-meteo.com/v1/forecast?latitude=%latitude%&longitude=%longitude%&current=temperature_2m,relative_humidity_2m,precipitation,rain";
 	private final ObjectMapper mapper = new ObjectMapper();
 	@Override
-	public ClimaDto GetClima() {
+	public ClimaDto GetClima(RqClimaDto rqClimaDto) {
 		try {
-			String result = RequestService.Get(Url);
+			String result = RequestService.Get(Url.replace("%latitude%", rqClimaDto.Latitude).replace("%longitude%",rqClimaDto.Longitude));
 			ClimaOpenMeteoDto resultObj = MapperJson(result);
 			return Mapper(resultObj);
 			
@@ -42,6 +43,8 @@ public class OpenMeteoFactory implements IClimaFactory<ClimaOpenMeteoDto> {
 		clima.Service = "Open-Meteo";
 		clima.Temperatura = resultObj.current.temperature_2m;
 		clima.Cidade = resultObj.timezone;
+		clima.Humidade = resultObj.current.relative_humidity_2m;
+		clima.Precipitacao = resultObj.current.precipitation;
 		return clima;
 	}
 

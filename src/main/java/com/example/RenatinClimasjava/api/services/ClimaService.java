@@ -1,6 +1,7 @@
 package com.example.RenatinClimasjava.api.services;
 
 import com.example.RenatinClimasjava.api.domain.ClimaDto;
+import com.example.RenatinClimasjava.api.domain.RqClimaDto;
 import com.example.RenatinClimasjava.api.factories.AdvisorClimaTempoFactory;
 import com.example.RenatinClimasjava.api.factories.HgBrasilFactory;
 import com.example.RenatinClimasjava.api.factories.OpenMeteoFactory;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class ClimaService {
     List<IClimaFactory> factories = GetFactories();
-
+    
     private List<IClimaFactory> GetFactories() {
         var retorno =  new ArrayList<IClimaFactory>();
         retorno.add(new AdvisorClimaTempoFactory());
@@ -24,12 +25,13 @@ public class ClimaService {
         return retorno;
     }
 
-    public List<ClimaDto> GetClimas(){
+    public List<ClimaDto> GetClimas(RqClimaDto rqClimaDto){
         List<ClimaDto> retorno = new ArrayList<ClimaDto>();
-
+        
         for (var factory: factories) {
-             retorno.add(factory.GetClima());
+             retorno.add(factory.GetClima(rqClimaDto));
         }
+        
         return retorno;
     }
 }
