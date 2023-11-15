@@ -9,8 +9,10 @@ import com.example.RenatinClimasjava.api.factories.WeatherApiFactory;
 import com.example.RenatinClimasjava.api.factories.Interface.IClimaFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class ClimaService {
@@ -25,13 +27,25 @@ public class ClimaService {
         return retorno;
     }
 
-    public List<ClimaDto> GetClimas(RqClimaDto rqClimaDto){
-        List<ClimaDto> retorno = new ArrayList<ClimaDto>();
-        
+    public List<ClimaDto> GetClimas(RqClimaDto rqClimaDto)  {
+        List<ClimaDto> retorno = new ArrayList<>();
+        try {
+        ExecutorService ex = Executors.newCachedThreadPool();
+        var ListCallables = new ArrayList<Callable<ClimaDto>>();
+
         for (var factory: factories) {
-             retorno.add(factory.GetClima(rqClimaDto));
+            ListCallables.add(() -> factory.GetClima(rqClimaDto));
         }
-        
+
+
+            var furure = ex.invokeAll(ListCallables);
+            for (var f: furure) {
+                retorno.add(f.get());
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
         return retorno;
     }
 }
